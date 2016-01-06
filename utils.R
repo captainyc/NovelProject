@@ -1,15 +1,16 @@
-chunk <- function(x, nchunks=NULL, chunksize=NULL, remove=NULL, randomize=FALSE, blocksize=1) {
+chunk <- function(x, nchunks=NULL, chunksize=NULL, remove=NULL) {
 	n = length(x)
 	if (!is.null(nchunks)) chunksize = floor(n/nchunks)
 	else if (!is.null(chunksize)) nchunks = floor(n/chunksize)
 	else nchunks = 20; chunksize = floor(n/nchunks)
-	if (randomize) {
-		nblocks = ceiling(length(x)/blocksize)
-		x = unlist(lapply(sample(nblocks),function(i) x[((i-1)*blocksize+1):min(i*blocksize,n)]))
+	if (nchunks==0) {
+		chunks = list(x)
+		chunks[[1]] = chunks[[1]][!(chunks[[1]] %in% remove)]
 	}
-	chunks = lapply(1:nchunks,function(i) x[((i-1)*chunksize+1):(i*chunksize)])
-	if (!is.null(remove)) {
-		for (i in 1:length(chunks)) {
+	else {
+		chunks = list()
+		for (i in 1:nchunks) {
+			chunks[[i]] = x[((i-1)*chunksize+1):(i*chunksize)]
 			chunks[[i]] = chunks[[i]][!(chunks[[i]] %in% remove)]
 		}
 	}
@@ -51,4 +52,10 @@ cross_half_score <- function(x,method="euclidean") {
 	}
 	n = nrow(x)
 	return(sum(w[1:floor(n/2),(floor(n/2)+1):n])/floor(n/2)^2)
+}
+
+cumsum_test <- function(x, replicate=100) {
+	x = x-mean(x)
+	y = sapply(1:replicate,function(i){max(abs(cumsum(sample(x))))})
+	return(mean(max(abs(cumsum(x)))<=y))
 }
