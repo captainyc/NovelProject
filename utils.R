@@ -59,3 +59,8 @@ cumsum_test <- function(x, replicate=100) {
 	y = sapply(1:replicate,function(i){max(abs(cumsum(sample(x))))})
 	return(mean(max(abs(cumsum(x)))<=y))
 }
+
+get_chunk(file_name, chunk_no, nchunks=NULL, chunksize=NULL) {
+	text = scan(file_name, what="character", sep=" ", quote="", quiet=TRUE)
+	return(chunk(text,nchunks,chunksize)[[chunk_no]])
+}
