@@ -90,12 +90,12 @@ cat("Recording chunkwise measurements...\n")
 pb = txtProgressBar(style=3)
 record_jp = data.frame(file_id=NULL,chunk_no=NULL,ttr=NULL,ent=NULL,con_ent=NULL)
 for (i in 1:nrow(meta_jp)) {
-	text = scan(paste0("~/github/NovelProject/data/chinese/",meta_jp$file_id_name[i]), what="character", sep=" ", quote="", quiet=TRUE)
+	text = scan(paste0("~/github/NovelProject/data/japanese/",meta_jp$file_id[i],".txt"), what="character", sep=" ", quote="", quiet=TRUE)
 	text = text[text!=""]
 	ttr = feature_ttr(text, chunksize=chunksize, remove=punct$jp, return.value=TRUE)
 	ent = feature_entropy(text, chunksize=chunksize, remove=punct$jp, return.value=TRUE)
 	con_ent = feature_con_ent_new(text, chunksize=chunksize, remove=punct$jp, return.value=TRUE)
-	record_jp = rbind(record_jp,data.frame(file_id=rep(meta_jp$file_id_name[i],length(ttr)),chunk_no=1:length(ttr),ttr=ttr,ent=ent,con_ent=con_ent))
+	record_jp = rbind(record_jp,data.frame(file_id=rep(meta_jp$file_id[i],length(ttr)),chunk_no=1:length(ttr),ttr=ttr,ent=ent,con_ent=con_ent))
 	setTxtProgressBar(pb,i/nrow(meta_jp))
 }
 close(pb)
